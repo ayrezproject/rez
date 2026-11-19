@@ -63,67 +63,18 @@
         </div>
       </div>
 
-      <!-- Action Toolbar Produksi: Export, Import, Reset -->
+      <!-- Action Toolbar: Reset -->
       <div class="flex items-center gap-2">
-        <label for="input-import-json" title="Pulihkan data draft dari berkas JSON" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-lg cursor-pointer transition-colors">
-          <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-          Import
-        </label>
-        <input type="file" id="input-import-json" accept=".json" class="hidden">
-
-        <button type="button" id="btn-export-json" title="Cadangkan seluruh data form ke berkas JSON" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors">
-          <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-          Export
-        </button>
-
         <button type="button" id="btn-reset-draft" title="Reset total formulir untuk audit baru" class="px-3 py-1.5 text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition-colors flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          Reset Draft
+          Reset
         </button>
       </div>
     </div>
   </header>
 
-  <!-- FLOATING SCORE HUD (Real-time Calculator Bar) -->
-  <aside class="fixed bottom-0 sm:bottom-4 left-0 sm:left-1/2 sm:-translate-x-1/2 w-full sm:w-[94%] max-w-3xl z-40 px-3 sm:px-0 no-print pb-2 sm:pb-0 pointer-events-none">
-    <div class="pointer-events-auto bg-slate-900/95 backdrop-blur-md text-white rounded-none sm:rounded-2xl p-3.5 sm:p-4 shadow-2xl border-t sm:border border-slate-700/80 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div>
-          <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Skor Kelayakan</div>
-          <div class="flex items-baseline gap-2">
-            <span id="hud-total-score" class="text-2xl sm:text-3xl font-black text-white font-mono">0.0%</span>
-            <span id="hud-grade-badge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-red-900/80 text-red-200">
-              Grade D · Tidak Layak Dilanjutkan
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ringkasan 3 Klaster Bobot -->
-      <div class="hidden md:flex items-center gap-4 text-xs border-l border-slate-700 pl-4">
-        <div>
-          <div class="text-[10px] text-slate-400">Keamanan Pangan</div>
-          <div id="hud-food-safety" class="font-semibold text-slate-200 font-mono">0.0/65%</div>
-        </div>
-        <div>
-          <div class="text-[10px] text-slate-400">Legalitas & SDM</div>
-          <div id="hud-legalitas" class="font-semibold text-slate-200 font-mono">0.0/23%</div>
-        </div>
-        <div>
-          <div class="text-[10px] text-slate-400">Lahan & K3</div>
-          <div id="hud-lahan" class="font-semibold text-slate-200 font-mono">0.0/12%</div>
-        </div>
-      </div>
-
-      <button type="button" onclick="document.getElementById('btn-next-step').click()" class="ml-auto px-4 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-lg transition-all flex items-center gap-1.5">
-        Lihat Rekomendasi
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </aside>
-
   <!-- MAIN CONTAINER -->
-  <main class="max-w-3xl mx-auto w-full px-4 sm:px-6 py-6 pb-28 sm:pb-32 flex-grow">
+  <main class="max-w-3xl mx-auto w-full px-4 sm:px-6 py-6 pb-12 flex-grow">
 
     <!-- TITLE & PETUNJUK RESMI BGN -->
     <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 mb-6">
@@ -218,7 +169,7 @@
           <label class="block text-xs font-semibold text-slate-800">Sertifikat Laik Higiene Sanitasi (SLHS) <span class="text-slate-400 font-normal">(Bobot 6%)</span></label>
           <div class="grid grid-cols-2 gap-2.5">
             <button type="button" data-radio-group="slhs" data-value="Ada" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium transition-all">Ada</button>
-            <button type="button" data-radio-group="slhs" data-value="Tidak" class="px-4 py-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-sm transition-all">Tidak</button>
+            <button type="button" data-radio-group="slhs" data-value="Tidak" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium transition-all">Tidak</button>
           </div>
           <!-- Dropzone Foto SLHS -->
           <div class="evidence-dropzone border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-xl p-3.5 text-center cursor-pointer transition-colors" data-evidence-id="foto_slhs">
@@ -239,21 +190,21 @@
             <label class="block text-xs font-semibold text-slate-800">Sertifikat Halal <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="grid grid-cols-2 gap-1.5">
               <button type="button" data-radio-group="halal" data-value="Ada" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="halal" data-value="Tidak" class="px-2 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="halal" data-value="Tidak" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="space-y-1.5">
             <label class="block text-xs font-semibold text-slate-800">Persetujuan Gedung (PBG) <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="grid grid-cols-2 gap-1.5">
               <button type="button" data-radio-group="pbg" data-value="Ada" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="pbg" data-value="Tidak" class="px-2 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="pbg" data-value="Tidak" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="space-y-1.5">
             <label class="block text-xs font-semibold text-slate-800">Sertifikat Layak Fungsi (SLF) <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="grid grid-cols-2 gap-1.5">
               <button type="button" data-radio-group="slf" data-value="Ada" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="slf" data-value="Tidak" class="px-2 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="slf" data-value="Tidak" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
         </div>
@@ -272,7 +223,7 @@
             <label class="text-xs font-semibold text-slate-800">Ada Kepala SPPG di Lokasi <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="inline-flex gap-2">
               <button type="button" data-radio-group="kepala_sppg" data-value="Ada" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="kepala_sppg" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="kepala_sppg" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -288,7 +239,7 @@
             <label class="text-xs font-semibold text-slate-800">Ada Pengawas Gizi di Lokasi <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="inline-flex gap-2">
               <button type="button" data-radio-group="pengawas_gizi" data-value="Ada" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="pengawas_gizi" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="pengawas_gizi" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -315,7 +266,7 @@
             <label class="text-xs font-semibold text-slate-800">Ada Pengawas Keuangan di Lokasi <span class="text-slate-400 font-normal">(1%)</span></label>
             <div class="inline-flex gap-2">
               <button type="button" data-radio-group="pengawas_keuangan" data-value="Ada" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="pengawas_keuangan" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="pengawas_keuangan" data-value="Tidak" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -338,14 +289,14 @@
             <label class="block text-xs font-semibold text-slate-800">Kehadiran Chef di Lokasi <span class="text-slate-400 font-normal">(3%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="chef_hadir" data-value="Ada" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="chef_hadir" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="chef_hadir" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div class="space-y-2">
             <label class="block text-xs font-semibold text-slate-800">Paklaring / Pengalaman Kerja ≥ 1 Thn <span class="text-slate-400 font-normal">(3%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="chef_paklaring" data-value="Ada" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ada</button>
-              <button type="button" data-radio-group="chef_paklaring" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="chef_paklaring" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
         </div>
@@ -403,7 +354,7 @@
             <label class="block text-xs font-semibold text-slate-700 mb-1">Chiller Berfungsi Baik?</label>
             <div class="grid grid-cols-2 gap-1.5">
               <button type="button" data-radio-group="chiller_ok" data-value="Ya" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (5%)</button>
-              <button type="button" data-radio-group="chiller_ok" data-value="Tidak" class="px-2 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="chiller_ok" data-value="Tidak" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
         </div>
@@ -423,7 +374,7 @@
             <label class="block text-xs font-semibold text-slate-700 mb-1">Freezer Berfungsi Baik?</label>
             <div class="grid grid-cols-2 gap-1.5">
               <button type="button" data-radio-group="freezer_ok" data-value="Ya" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (6%)</button>
-              <button type="button" data-radio-group="freezer_ok" data-value="Tidak" class="px-2 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="freezer_ok" data-value="Tidak" class="px-2 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
         </div>
@@ -461,14 +412,14 @@
             <label class="block text-xs font-semibold text-slate-700 mb-1">Ada Kompor High Pressure?</label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="kompor_high_pressure_ada" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya</button>
-              <button type="button" data-radio-group="kompor_high_pressure_ada" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="kompor_high_pressure_ada" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Seluruh Kompor Berfungsi Baik?</label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="kompor_semua_baik" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (4%)</button>
-              <button type="button" data-radio-group="kompor_semua_baik" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="kompor_semua_baik" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
         </div>
@@ -525,14 +476,14 @@
             <label class="block text-xs font-semibold text-slate-800 mb-1">Saluran IPAL Berfungsi? <span class="text-slate-400 font-normal">(4%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="ipal_ok" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (4%)</button>
-              <button type="button" data-radio-group="ipal_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="ipal_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-800 mb-1">Saluran Grease Trap Berfungsi? <span class="text-slate-400 font-normal">(2%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="grease_trap_ok" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (2%)</button>
-              <button type="button" data-radio-group="grease_trap_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="grease_trap_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
         </div>
@@ -550,7 +501,7 @@
           <label class="block text-xs font-semibold text-slate-800">APAR Tersedia & Masa Berlaku Aktif <span class="text-slate-400 font-normal">(Bobot 5%)</span></label>
           <div class="grid grid-cols-2 gap-2">
             <button type="button" data-radio-group="apar_berlaku" data-value="Ya" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium">Tersedia & Berlaku (5%)</button>
-            <button type="button" data-radio-group="apar_berlaku" data-value="Tidak" class="px-3 py-2 rounded-xl border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Kadaluarsa / Tidak Ada (0%)</button>
+            <button type="button" data-radio-group="apar_berlaku" data-value="Tidak" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium">Kadaluarsa / Tidak Ada (0%)</button>
           </div>
         </div>
 
@@ -560,14 +511,14 @@
             <label class="block text-xs font-semibold text-slate-800 mb-1">Ada Info "Batas Waktu Konsumsi" <span class="text-slate-400 font-normal">(1.5%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="label_batas_waktu" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya</button>
-              <button type="button" data-radio-group="label_batas_waktu" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="label_batas_waktu" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-800 mb-1">Ada Info "Tidak Boleh Dibawa Pulang" <span class="text-slate-400 font-normal">(1.5%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="label_tidak_dibawa_pulang" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya</button>
-              <button type="button" data-radio-group="label_tidak_dibawa_pulang" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak</button>
+              <button type="button" data-radio-group="label_tidak_dibawa_pulang" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak</button>
             </div>
           </div>
         </div>
@@ -716,14 +667,14 @@
             <label class="block text-xs font-semibold text-slate-800">Terpasang CCTV di 10 Titik Kritis? <span class="text-slate-400 font-normal">(1.5%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="cctv_titik_kritis" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (1.5%）</button>
-              <button type="button" data-radio-group="cctv_titik_kritis" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="cctv_titik_kritis" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
           <div class="space-y-2">
             <label class="block text-xs font-semibold text-slate-800">Bukti Speed Test Download & Upload Ada? <span class="text-slate-400 font-normal">(1.5%)</span></label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" data-radio-group="internet_speedtest_ok" data-value="Ya" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Ya (1.5%)</button>
-              <button type="button" data-radio-group="internet_speedtest_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-blue-600 bg-blue-50 text-blue-700 font-semibold text-xs">Tidak (0%)</button>
+              <button type="button" data-radio-group="internet_speedtest_ok" data-value="Tidak" class="px-3 py-2 rounded-lg border border-slate-300 text-xs font-medium">Tidak (0%)</button>
             </div>
           </div>
         </div>

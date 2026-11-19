@@ -41,7 +41,7 @@
     'AMBON', 'JAYAPURA', 'SORONG', 'MERAUKE'
   ].sort();
 
-  const STORAGE_KEY = 'sppg_assessment_production_v1';
+  const STORAGE_KEY = 'sppg_assessment_v2';
 
   // Fungsi menghasilkan state awal formulir kosong (Kondisi Bersih / Fresh Audit)
   function getCleanInitialState() {
@@ -54,32 +54,32 @@
       inspection_date: new Date().toISOString().split('T')[0],
 
       // Seksi 01
-      slhs: 'Tidak',
-      halal: 'Tidak',
-      pbg: 'Tidak',
-      slf: 'Tidak',
+      slhs: '',
+      halal: '',
+      pbg: '',
+      slf: '',
 
       // Seksi 02
-      kepala_sppg: 'Tidak',
+      kepala_sppg: '',
       nama_kepala: '',
       nik_kepala: '',
       telp_kepala: '',
-      pengawas_gizi: 'Tidak',
+      pengawas_gizi: '',
       nama_gizi: '',
       nik_gizi: '',
       telp_gizi: '',
       jurusan_gizi: '',
-      pengawas_keuangan: 'Tidak',
+      pengawas_keuangan: '',
       nama_keuangan: '',
       nik_keuangan: '',
       telp_keuangan: '',
 
       // Seksi 03
-      chef_hadir: 'Tidak',
+      chef_hadir: '',
       nama_chef: '',
       nik_chef: '',
       telp_chef: '',
-      chef_paklaring: 'Tidak',
+      chef_paklaring: '',
 
       // Seksi 04 & 05
       air_minum: '',
@@ -88,19 +88,19 @@
       // Seksi 06
       chiller_qty: '',
       chiller_temp: '',
-      chiller_ok: 'Tidak',
+      chiller_ok: '',
       freezer_qty: '',
       freezer_temp: '',
       freezer_kapasitas: '',
-      freezer_ok: 'Tidak',
-      rantai_dingin_semua_baik: 'Tidak',
+      freezer_ok: '',
+      rantai_dingin_semua_baik: '',
 
       // Seksi 07
       kompor_high_pressure_qty: '',
       kompor_low_pressure_qty: '',
       kompor_berfungsi_qty: '',
-      kompor_high_pressure_ada: 'Tidak',
-      kompor_semua_baik: 'Tidak',
+      kompor_high_pressure_ada: '',
+      kompor_semua_baik: '',
 
       // Seksi 08
       wastafel_persiapan: 'tidak',
@@ -108,16 +108,16 @@
       wastafel_pengolahan: 'tidak',
       wastafel_km: 'tidak',
       wastafel_masuk: 'tidak',
-      ipal_ok: 'Tidak',
-      grease_trap_ok: 'Tidak',
+      ipal_ok: '',
+      grease_trap_ok: '',
 
       // Seksi 09
-      apar_tersedia: 'Tidak',
-      apar_berlaku: 'Tidak',
+      apar_tersedia: '',
+      apar_berlaku: '',
 
       // Seksi 10
-      label_batas_waktu: 'Tidak',
-      label_tidak_dibawa_pulang: 'Tidak',
+      label_batas_waktu: '',
+      label_tidak_dibawa_pulang: '',
       label_info_lain: '',
 
       // Seksi 11
@@ -136,10 +136,10 @@
       alur_produksi: '',
 
       // Seksi 14
-      cctv_titik_kritis: 'Tidak',
+      cctv_titik_kritis: '',
       cctv_qty: '',
       cctv_tipe: 'IP Cam',
-      internet_speedtest_ok: 'Tidak',
+      internet_speedtest_ok: '',
       internet_download: '',
       internet_upload: '',
       internet_provider: ''
@@ -165,7 +165,6 @@
     setupDropzones();
     setupModalEvents();
     setupResetButton();
-    setupBackupRestore();
   });
 
   // 0. Registrasi PWA Service Worker (Mode Produksi & Offline)
@@ -513,38 +512,52 @@
 
       // 2. Bersihkan penyimpanan lokal
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.clear();
 
       // 3. Kosongkan semua input & select DOM
-      const inputs = document.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
+      const inputs = document.querySelectorAll('input, select, textarea');
       inputs.forEach(input => {
         const field = input.getAttribute('data-field');
         if (field === 'inspection_date') {
           input.value = new Date().toISOString().split('T')[0];
         } else if (input.tagName === 'SELECT') {
           input.selectedIndex = 0;
+          if (field) state.formData[field] = input.value;
+        } else if (input.type === 'file') {
+          input.value = '';
         } else {
           input.value = '';
         }
       });
 
-      // 4. Reset pilihan tombol radio card ke default bersih
+      // 4. Reset textarea rekomendasi & penghitung karakter
+      const recNotes = document.getElementById('rec-notes');
+      if (recNotes) recNotes.value = '';
+      const recNotesCount = document.getElementById('rec-notes-count');
+      if (recNotesCount) recNotesCount.textContent = '0 / 140';
+
+      // 5. Reset pilihan tombol radio card ke netral (tanpa seleksi aktif)
       const allRadioButtons = document.querySelectorAll('button[data-radio-group]');
       allRadioButtons.forEach(btn => {
         const group = btn.getAttribute('data-radio-group');
         const val = btn.getAttribute('data-value');
-        const isDefaultSelected = (state.formData[group] === val);
-        updateRadioStyles(btn, isDefaultSelected);
+        const isSelected = (state.formData[group] === val && val !== '');
+        updateRadioStyles(btn, isSelected);
       });
 
-      // 5. Reset Dropdown Kab/Kota
+      // 6. Reset Dropdown Kab/Kota
       const kabDisplay = document.getElementById('kabkota-value');
       if (kabDisplay) {
         kabDisplay.textContent = 'Pilih Kabupaten / Kota';
         kabDisplay.classList.remove('text-slate-900', 'font-medium');
         kabDisplay.classList.add('text-slate-400');
       }
+      const kabSearch = document.getElementById('kabkota-search');
+      if (kabSearch) kabSearch.value = '';
+      const kabMenu = document.getElementById('kabkota-menu');
+      if (kabMenu) kabMenu.classList.add('hidden');
 
-      // 6. Reset seluruh Dropzone Berkas
+      // 7. Reset seluruh Dropzone Berkas
       const dropzones = document.querySelectorAll('.evidence-dropzone');
       dropzones.forEach(dz => {
         const fileInput = dz.querySelector('input[type="file"]');
@@ -555,81 +568,33 @@
         if (defaultContent) defaultContent.classList.remove('hidden');
       });
 
-      // 7. Bersihkan Kanvas Tanda Tangan
+      // 8. Bersihkan Kanvas Tanda Tangan
       const canvas = document.getElementById('signature-pad');
       if (canvas) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
 
-      // 8. Tutup Modal jika terbuka
+      // 9. Reset info rasio kompor
+      const komporRatioInfo = document.getElementById('kompor-ratio-info');
+      if (komporRatioInfo) {
+        komporRatioInfo.textContent = 'Menunggu input...';
+        komporRatioInfo.className = 'text-xs font-medium text-slate-500';
+      }
+
+      // 10. Tutup Modal jika terbuka
       const modal = document.getElementById('recommendation-modal');
       if (modal) modal.classList.add('hidden');
 
-      // 9. Hitung ulang skor (otomatis menjadi 0.0% Grade D)
+      // 11. Hitung ulang skor (otomatis menjadi 0.0% Grade D)
       recalculateScores();
 
-      // 10. Scroll ke bagian atas dengan mulus
+      // 12. Scroll ke bagian atas dengan mulus
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // 11. Tampilkan notifikasi konfirmasi
-      showToast('Formulir checklist berhasil direset total ke kondisi awal bersih.', 'info');
+      // 13. Tampilkan notifikasi konfirmasi
+      showToast('Seluruh data dan isian berhasil direset total.', 'info');
     });
-  }
-
-  // 8. Fitur Cadangkan (Export) & Pulihkan (Import) Berkas Data
-  function setupBackupRestore() {
-    const btnExport = document.getElementById('btn-export-json');
-    const inputImport = document.getElementById('input-import-json');
-
-    if (btnExport) {
-      btnExport.addEventListener('click', () => {
-        const exportPayload = {
-          app: 'SPPG-Triase-BGN',
-          version: '1.0.0',
-          exportedAt: new Date().toISOString(),
-          data: state.formData,
-          scores: state.scores
-        };
-
-        const jsonStr = JSON.stringify(exportPayload, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const sppgId = state.formData.sppg_id || 'DRAFT';
-        a.href = url;
-        a.download = `sppg-triase-${sppgId}-${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('Data berhasil diekspor sebagai berkas JSON cadangan.', 'success');
-      });
-    }
-
-    if (inputImport) {
-      inputImport.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          try {
-            const parsed = JSON.parse(event.target.result);
-            if (parsed && parsed.data) {
-              Object.assign(state.formData, parsed.data);
-              saveDraft();
-              syncDomWithState();
-              recalculateScores();
-              showToast('Data checklist berhasil dipulihkan dari berkas JSON.', 'success');
-            } else {
-              showToast('Format berkas JSON tidak valid!', 'error');
-            }
-          } catch (err) {
-            showToast('Gagal membaca berkas JSON: ' + err.message, 'error');
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
   }
 
   function syncDomWithState() {

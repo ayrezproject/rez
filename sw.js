@@ -1,5 +1,5 @@
 // sw.js — Service Worker untuk Mode Produksi & Offline PWA Lapangan Satgas BGN
-const CACHE_NAME = 'sppg-bgn-v1.0.0';
+const CACHE_NAME = 'sppg-bgn-v1.0.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
