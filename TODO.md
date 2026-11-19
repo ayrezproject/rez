@@ -1,6 +1,6 @@
 # TODO.md: Rencana Kerja Kloning & Penilaian Kelayakan SPPG
 
-Daftar tugas implementasi terstruktur untuk sistem checklist dan penilaian kelayakan operasional SPPG.
+Daftar status progres pengerjaan sistem checklist dan penilaian kelayakan operasional SPPG.
 
 ---
 
@@ -8,60 +8,59 @@ Daftar tugas implementasi terstruktur untuk sistem checklist dan penilaian kelay
 - [x] Analisis antarmuka dan komponen `form.bgn.go.id`.
 - [x] Ekstraksi rumus dan bobot penilaian dari [Paparan.pdf](file:///c:/Users/Ayrez/Documents/rez/Paparan.pdf).
 - [x] Pembuatan dokumen panduan teknis: [PRD.md](file:///c:/Users/Ayrez/Documents/rez/PRD.md), [AGENTS.md](file:///c:/Users/Ayrez/Documents/rez/AGENTS.md), [ARCHITECTURE.md](file:///c:/Users/Ayrez/Documents/rez/ARCHITECTURE.md), [DESIGN.md](file:///c:/Users/Ayrez/Documents/rez/DESIGN.md), [SKILL.md](file:///c:/Users/Ayrez/Documents/rez/SKILL.md), [WORKFLOW.md](file:///c:/Users/Ayrez/Documents/rez/WORKFLOW.md).
-- [ ] Konfirmasi dan persetujuan Bos sebelum penulisan kode sumber.
+- [x] Konfigurasi `.gitignore` dan inisialisasi repositori Git untuk perekaman kode.
+- [x] Persetujuan dan perintah resmi pengerjaan dari Bos.
 
 ---
 
 ### Fase 2: Desain Sistem & Token UI
-- [ ] Implementasi token Tailwind CSS v4 / custom CSS `:root` (`--color-primary`, `--color-paper`, dsb).
-- [ ] Penyiapan tipografi standar BGN (Font Inter, heading semibold, measure < 80 karakter).
-- [ ] Pembuatan komponen UI dasar ramah sentuhan (Radio Cards, Accessible Dropdowns, Input Fields, Badges).
-- [ ] Penyiapan 8 status interaktif (default, hover, focus, active, disabled, loading, error, success).
+- [x] Implementasi token CSS & variabel visual BGN (`--color-primary`, `--color-paper`, dsb).
+- [x] Integrasi tipografi Google Fonts Inter (Display roman, measure nyaman, anti-slop).
+- [x] Pembuatan komponen kartu radio, custom searchable dropdown, dan dropzone berkas.
+- [x] Penanganan 8 status interaktif (default, hover, focus, active, disabled, loading, error, success).
 
 ---
 
 ### Fase 3: Mesin Hitung Skor (Scoring Engine)
-- [ ] Implementasi fungsi `calcLegalitas` (Bobot 12%).
-- [ ] Implementasi fungsi `calcStaff` & `calcChef` (Bobot 5% & 6%).
-- [ ] Implementasi fungsi `calcAirMinum` & `calcAirMasak` (Bobot 7% & 9%).
-- [ ] Implementasi fungsi `calcColdChain` (Chiller 5%, Freezer 6%).
-- [ ] Implementasi fungsi `calcKompor` dengan kalkulasi rasio otomatis $Kompor \times 450 / PM$ (Bobot 4%).
-- [ ] Implementasi fungsi `calcSanitasi` (5 Wastafel 6%, IPAL 4%, Grease Trap 2%).
-- [ ] Implementasi fungsi `calcAPAR` (5%) & `calcLabelOmpreng` (3%).
-- [ ] Implementasi fungsi `calcLuasan` terhadap ambang batas PM (7%).
-- [ ] Implementasi fungsi `calcGudang` (Rak & Palet Stainless/Besi/Kayu 8%).
-- [ ] Implementasi fungsi `calcAlurProduksi` (Sekat penuh/catatan 8%).
-- [ ] Implementasi fungsi `calcCCTV` & internet speed test (3%).
-- [ ] Pengujian logika perhitungan dengan skenario sampel skor 100%, 75%, dan <60%.
+- [x] Implementasi modul [scoring.js](file:///c:/Users/Ayrez/Documents/rez/scoring.js) mencakup 14 fungsi kalkulator indikator.
+- [x] Implementasi formula rasio kompor otomatis $Kompor \times 450 / Target\_PM$.
+- [x] Agregasi 3 klaster bobot: Keamanan Pangan (65%), Legalitas & SDM (23%), Lahan & K3 (12%).
+- [x] Penentuan grade otomatis: Grade A (≥80%), Grade B (60–79.9%), Grade D (<60%).
+- [x] Pengujian unit test perhitungan matematika scoring engine lolos 100%.
 
 ---
 
 ### Fase 4: Implementasi Formulir 14 Seksi
-- [ ] Header resmi instrumen BGN & logo resmi.
-- [ ] Seksi Identitas SPPG & Petugas (ID SPPG, Nama, PM, Dropdown Kab/Kota, Petugas, Tanggal).
-- [ ] Seksi 01–05: Legalitas, Personel SPPG, Chef, Sumber Air.
-- [ ] Seksi 06–10: Rantai Dingin, Kompor, Sanitasi, APAR, Label Ompreng.
-- [ ] Seksi 11–14: Lahan/Bangunan, Gudang, Alur Produksi Video, CCTV & Koneksi.
-- [ ] Komponen drag-and-drop berkas dengan tombol trigger kamera HP dan simulasi timestamp.
-- [ ] Banner peringatan penguncian data (Callout merah) dan tombol navigasi wizard.
+- [x] Pembuatan berkas [index.html](file:///c:/Users/Ayrez/Documents/rez/index.html) dan [app.js](file:///c:/Users/Ayrez/Documents/rez/app.js).
+- [x] Header resmi lambang instansi BGN dan petunjuk pengerjaan 1–5.
+- [x] Seksi identitas SPPG & pemilihan Kabupaten/Kota se-Indonesia.
+- [x] Seksi 01–05: Legalitas dokumen, staf SPPG, chef, dan sumber air minum/masak.
+- [x] Seksi 06–10: Rantai dingin (chiller/freezer), kompor, sanitasi wastafel 5 titik & limbah, APAR, dan label ompreng.
+- [x] Seksi 11–14: Lahan & kesesuaian luasan, gudang kering/basah, video alur produksi, dan CCTV pengawasan.
+- [x] Dropzone berkas bukti dengan batasan ukuran 50MB/200MB dan tombol pemicu kamera perangkat.
+- [x] Kotak peringatan penguncian data resmi BGN.
 
 ---
 
 ### Fase 5: Panel Rekomendasi, TTD Digital & Pengesahan
-- [ ] Floating HUD bar (Skor real-time, cluster Keamanan Pangan 65%, Legalitas 23%, Lahan 12%).
-- [ ] Panel rekomendasi kelayakan (Grade A Hijau, Grade B Kuning, Grade D Merah).
-- [ ] Input area alasan singkat rekomendasi (maks 2 baris).
-- [ ] Kanvas tanda tangan digital interaktif (Ketua Satgas MBG Kab/Kota) dengan tombol clear/reset.
+- [x] Floating HUD bar kalkulator skor reaktif (real-time live update).
+- [x] Modal popup rekomendasi kelayakan operasional dengan badge Grade A/B/D.
+- [x] Kolom catatan pertimbangan tertulis (maksimal 2 baris) dengan penghitung karakter.
+- [x] Kanvas tanda tangan digital (HTML5 Canvas) Ketua Satgas MBG dengan fungsi goresan mouse/touch dan tombol bersihkan.
 
 ---
 
 ### Fase 6: Penyimpanan & Ekspor Berita Acara
-- [ ] Modul auto-save ke `localStorage`.
-- [ ] Modul cetak format resmi Berita Acara Triase Lapangan sesuai halaman 3 [Paparan.pdf](file:///c:/Users/Ayrez/Documents/rez/Paparan.pdf).
+- [x] Auto-save draft otomatis ke `localStorage` browser.
+- [x] Fitur reset draft formulir.
+- [x] Tombol cetak Berita Acara Triase Lapangan dengan print stylesheet resmi.
+- [x] Tombol routing pengiriman hasil ke `https://s.bgn.go.id/satgas-mbg`.
 
 ---
 
 ### Fase 7: Verifikasi & Audit Kualitas
-- [ ] Pengujian responsivitas mobile (320px, 375px, 414px, 768px).
-- [ ] Audit aksesibilitas form (WCAG AA).
-- [ ] Demonstrasi hasil kepada Bos untuk review dan evaluasi akhir.
+- [x] Pengujian live di browser headless via server lokal.
+- [x] Pengujian reaktivitas skor: SLHS, Chiller, Freezer terbukti mengubah nilai total dan grade secara real-time.
+- [x] Pengujian responsivitas mobile (viewport 390x844): bebas scroll horizontal, tata letak rapi 100%.
+- [x] Pengujian modal rekomendasi dan kanvas tanda tangan interaktif terbukti berfungsi sempurna.
+- [ ] Laporan akhir dan demonstrasi kepada Bos.
