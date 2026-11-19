@@ -1,0 +1,23 @@
+# Node & Dependensi
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lingkungan & Editor
+.env
+.env.local
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Cadangan & Temp
+*.tmp
+*.bak
+*.log
+.hallmark/
+
+# Direktori Build
+dist/
+build/
