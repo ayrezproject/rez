@@ -68,4 +68,12 @@ Daftar status progres pengerjaan sistem checklist dan penilaian kelayakan operas
 - [x] Pengujian modal rekomendasi dan kanvas tanda tangan interaktif terbukti berfungsi sempurna.
 - [x] Verifikasi browser subagent: tombol reset terbukti membersihkan seluruh data, input, dan pilihan tombol radio ke kondisi netral.
 - [x] Verifikasi hilangnya tombol import/export dan floating HUD di antarmuka.
-- [ ] Laporan akhir dan demonstrasi kepada Bos.
+- [x] Laporan akhir dan demonstrasi kepada Bos.
+
+---
+
+### Fase 8: Persiapan Deploy GitHub & Publikasi
+- [x] Pembuatan [README.md](file:///c:/Users/Ayrez/Documents/rez/README.md) dokumentasi lengkap aplikasi, formula 14 indikator, dan panduan penggunaan.
+- [x] Pembuatan workflow GitHub Actions [.github/workflows/deploy.yml](file:///c:/Users/Ayrez/Documents/rez/.github/workflows/deploy.yml) untuk otomatisasi rilis ke GitHub Pages.
+- [x] Verifikasi path relatif berkas (`index.html`, `style.css`, `app.js`, `scoring.js`, `manifest.json`, `sw.js`).
+- [ ] Menghubungkan remote GitHub dan eksekusi push sesuai persetujuan Bos.
