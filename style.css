@@ -1,0 +1,83 @@
+/**
+ * style.css — Mode Produksi & Sistem Token Desain SPPG BGN (Hallmark Anti-Slop Compliant)
+ */
+
+:root {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #eff6ff;
+  --color-paper: #ffffff;
+  --color-surface-subtle: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+  --color-border-focus: #3b82f6;
+
+  --color-grade-a: #16a34a;
+  --color-grade-a-bg: #f0fdf4;
+  --color-grade-b: #d97706;
+  --color-grade-b-bg: #fffbeb;
+  --color-grade-d: #dc2626;
+  --color-grade-d-bg: #fef2f2;
+}
+
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: clip;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Toast Notifikasi Produksi */
+#toast-notification {
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Radio Card 8 Status Disiplin */
+button[data-radio-group] {
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 42px;
+}
+button[data-radio-group]:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+button[data-radio-group]:active {
+  transform: scale(0.98);
+}
+
+/* Format Cetak Berita Acara Triase Resmi A4 */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 15mm 15mm 15mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  #recommendation-modal {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  #recommendation-modal > div {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}

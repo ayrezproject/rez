@@ -50,9 +50,12 @@ Daftar status progres pengerjaan sistem checklist dan penilaian kelayakan operas
 
 ---
 
-### Fase 6: Penyimpanan & Ekspor Berita Acara
+### Fase 6: Penyimpanan, Ekspor & Mode Produksi
 - [x] Auto-save draft otomatis ke `localStorage` browser.
-- [x] Fitur reset draft formulir.
+- [x] Fitur reset draft formulir perbaikan bersih (mengosongkan form ke 0.0% Grade D).
+- [x] Ekspor dan Impor data checklist format JSON untuk backup/transfer offline.
+- [x] Mode produksi PWA offline: [manifest.json](file:///c:/Users/Ayrez/Documents/rez/manifest.json) & [sw.js](file:///c:/Users/Ayrez/Documents/rez/sw.js) (Service Worker caching).
+- [x] Stylesheet mandiri produksi [style.css](file:///c:/Users/Ayrez/Documents/rez/style.css) tanpa ketergantungan CDN eksternal.
 - [x] Tombol cetak Berita Acara Triase Lapangan dengan print stylesheet resmi.
 - [x] Tombol routing pengiriman hasil ke `https://s.bgn.go.id/satgas-mbg`.
 
@@ -63,4 +66,5 @@ Daftar status progres pengerjaan sistem checklist dan penilaian kelayakan operas
 - [x] Pengujian reaktivitas skor: SLHS, Chiller, Freezer terbukti mengubah nilai total dan grade secara real-time.
 - [x] Pengujian responsivitas mobile (viewport 390x844): bebas scroll horizontal, tata letak rapi 100%.
 - [x] Pengujian modal rekomendasi dan kanvas tanda tangan interaktif terbukti berfungsi sempurna.
+- [x] Verifikasi browser subagent untuk mode produksi dan pembersihan formulir via tombol Reset Draft.
 - [ ] Laporan akhir dan demonstrasi kepada Bos.

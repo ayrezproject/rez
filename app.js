@@ -1,12 +1,12 @@
 /**
- * app.js — Kontroler Interaktif & Antarmuka Triase SPPG BGN
- * Menghubungkan Form UI dengan ScoringEngine, Validasi, Dropdown Kab/Kota, dan Canvas TTD
+ * app.js — Kontroler Interaktif & Mode Produksi Triase SPPG BGN
+ * Menghubungkan Form UI dengan ScoringEngine, Validasi, Dropdown Kab/Kota, PWA Offline & Reset Bersih
  */
 
 (function () {
   'use strict';
 
-  // Daftar Kabupaten/Kota Representatif Se-Indonesia
+  // Daftar Kabupaten/Kota Se-Indonesia
   const KAB_KOTA_LIST = [
     'ACEH BARAT', 'ACEH BARAT DAYA', 'ACEH BESAR', 'ACEH JAYA', 'ACEH SELATAN',
     'ACEH SINGKIL', 'ACEH TAMIANG', 'ACEH TENGAH', 'ACEH TENGGARA', 'ACEH TIMUR',
@@ -41,12 +41,14 @@
     'AMBON', 'JAYAPURA', 'SORONG', 'MERAUKE'
   ].sort();
 
-  // State Utama Aplikasi
-  const state = {
-    formData: {
+  const STORAGE_KEY = 'sppg_assessment_production_v1';
+
+  // Fungsi menghasilkan state awal formulir kosong (Kondisi Bersih / Fresh Audit)
+  function getCleanInitialState() {
+    return {
       sppg_id: '',
       sppg_name: '',
-      target_pm: '3000',
+      target_pm: '',
       kab_kota: '',
       petugas_name: '',
       inspection_date: new Date().toISOString().split('T')[0],
@@ -80,77 +82,81 @@
       chef_paklaring: 'Tidak',
 
       // Seksi 04 & 05
-      air_minum: 'RO',
-      air_masak: 'RO',
+      air_minum: '',
+      air_masak: '',
 
       // Seksi 06
-      chiller_qty: '1',
-      chiller_temp: '4',
-      chiller_ok: 'Ya',
-      freezer_qty: '1',
-      freezer_temp: '-18',
-      freezer_kapasitas: '500',
-      freezer_ok: 'Ya',
-      rantai_dingin_semua_baik: 'Ya',
+      chiller_qty: '',
+      chiller_temp: '',
+      chiller_ok: 'Tidak',
+      freezer_qty: '',
+      freezer_temp: '',
+      freezer_kapasitas: '',
+      freezer_ok: 'Tidak',
+      rantai_dingin_semua_baik: 'Tidak',
 
       // Seksi 07
-      kompor_high_pressure_qty: '2',
-      kompor_low_pressure_qty: '6',
-      kompor_berfungsi_qty: '8',
-      kompor_high_pressure_ada: 'Ya',
-      kompor_semua_baik: 'Ya',
+      kompor_high_pressure_qty: '',
+      kompor_low_pressure_qty: '',
+      kompor_berfungsi_qty: '',
+      kompor_high_pressure_ada: 'Tidak',
+      kompor_semua_baik: 'Tidak',
 
       // Seksi 08
-      wastafel_persiapan: 'lengkap',
-      wastafel_pemorsian: 'lengkap',
-      wastafel_pengolahan: 'lengkap',
-      wastafel_km: 'lengkap',
-      wastafel_masuk: 'lengkap',
-      ipal_ok: 'Ya',
-      grease_trap_ok: 'Ya',
+      wastafel_persiapan: 'tidak',
+      wastafel_pemorsian: 'tidak',
+      wastafel_pengolahan: 'tidak',
+      wastafel_km: 'tidak',
+      wastafel_masuk: 'tidak',
+      ipal_ok: 'Tidak',
+      grease_trap_ok: 'Tidak',
 
       // Seksi 09
-      apar_tersedia: 'Ya',
-      apar_berlaku: 'Ya',
+      apar_tersedia: 'Tidak',
+      apar_berlaku: 'Tidak',
 
       // Seksi 10
-      label_batas_waktu: 'Ya',
-      label_tidak_dibawa_pulang: 'Ya',
+      label_batas_waktu: 'Tidak',
+      label_tidak_dibawa_pulang: 'Tidak',
       label_info_lain: '',
 
       // Seksi 11
       sppg_type: 'BGN',
-      luas_tanah: '500',
-      luas_bangunan: '350',
-      luasan_kesesuaian: 'Sesuai',
+      luas_tanah: '',
+      luas_bangunan: '',
+      luasan_kesesuaian: '',
 
       // Seksi 12
-      gudang_kering_rak: 'Stainless steel',
-      gudang_kering_palet: 'Stainless steel',
-      gudang_basah_rak: 'Stainless steel',
-      gudang_basah_palet: 'Stainless steel',
+      gudang_kering_rak: 'Tidak ada',
+      gudang_kering_palet: 'Tidak ada',
+      gudang_basah_rak: 'Tidak ada',
+      gudang_basah_palet: 'Tidak ada',
 
       // Seksi 13
-      alur_produksi: 'sekat_penuh',
+      alur_produksi: '',
 
       // Seksi 14
-      cctv_titik_kritis: 'Ya',
-      cctv_qty: '10',
+      cctv_titik_kritis: 'Tidak',
+      cctv_qty: '',
       cctv_tipe: 'IP Cam',
-      internet_speedtest_ok: 'Ya',
-      internet_download: '50',
-      internet_upload: '20',
-      internet_provider: 'Telkom IndiHome'
-    },
+      internet_speedtest_ok: 'Tidak',
+      internet_download: '',
+      internet_upload: '',
+      internet_provider: ''
+    };
+  }
+
+  // State Aktif
+  const state = {
+    formData: getCleanInitialState(),
     attachedFiles: {},
     scores: null,
     signatureDataUrl: null
   };
 
-  const STORAGE_KEY = 'sppg_assessment_draft_v1';
-
-  // Inisialisasi DOM setelah halaman siap
+  // Inisialisasi Saat Dokumen Siap
   document.addEventListener('DOMContentLoaded', () => {
+    initServiceWorker();
     initDropdowns();
     loadDraft();
     bindInputEvents();
@@ -158,7 +164,18 @@
     recalculateScores();
     setupDropzones();
     setupModalEvents();
+    setupResetButton();
+    setupBackupRestore();
   });
+
+  // 0. Registrasi PWA Service Worker (Mode Produksi & Offline)
+  function initServiceWorker() {
+    if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+      navigator.serviceWorker.register('./sw.js').catch((err) => {
+        console.warn('PWA Service Worker offline caching note:', err);
+      });
+    }
+  }
 
   // 1. Inisialisasi Dropdown Pencarian Kab/Kota
   function initDropdowns() {
@@ -213,7 +230,6 @@
 
   // 2. Hubungkan Input DOM dengan State
   function bindInputEvents() {
-    // Tangani input teks dan number
     const inputs = document.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
     inputs.forEach(input => {
       const field = input.getAttribute('data-field');
@@ -222,6 +238,12 @@
       }
 
       input.addEventListener('input', (e) => {
+        state.formData[field] = e.target.value;
+        saveDraft();
+        recalculateScores();
+      });
+
+      input.addEventListener('change', (e) => {
         state.formData[field] = e.target.value;
         saveDraft();
         recalculateScores();
@@ -236,7 +258,6 @@
         const val = btn.getAttribute('data-value');
         state.formData[group] = val;
 
-        // Perbarui gaya tombol radio dalam satu grup
         const siblings = document.querySelectorAll(`button[data-radio-group="${group}"]`);
         siblings.forEach(s => updateRadioStyles(s, s.getAttribute('data-value') === val));
 
@@ -263,7 +284,6 @@
     const res = window.ScoringEngine.calculateAll(state.formData);
     state.scores = res;
 
-    // Perbarui HUD Total Skor
     const hudScore = document.getElementById('hud-total-score');
     const hudBadge = document.getElementById('hud-grade-badge');
     const hudFoodSafety = document.getElementById('hud-food-safety');
@@ -282,25 +302,27 @@
          res.grade === 'B' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800');
     }
 
-    // Perbarui Rasio Kompor Info
     const komporRatioInfo = document.getElementById('kompor-ratio-info');
     if (komporRatioInfo) {
-      const pm = parseFloat(state.formData.target_pm) || 3000;
-      const kompor = parseFloat(state.formData.kompor_berfungsi_qty) || 0;
-      const ratio = pm > 0 ? (kompor * 450) / pm : 0;
-      komporRatioInfo.textContent = `Kapasitas: ${(kompor * 450)} PM / Target ${pm} PM (Rasio: ${ratio.toFixed(2)}) ${ratio >= 1.0 ? '✓ Cukup' : '✗ Kurang'}`;
-      komporRatioInfo.className = ratio >= 1.0 ? 'text-xs font-medium text-emerald-600' : 'text-xs font-medium text-red-600';
+      const pm = parseFloat(state.formData.target_pm);
+      const kompor = parseFloat(state.formData.kompor_berfungsi_qty);
+      if (!isNaN(pm) && pm > 0 && !isNaN(kompor) && kompor >= 0) {
+        const ratio = (kompor * 450) / pm;
+        komporRatioInfo.textContent = `Kapasitas: ${(kompor * 450)} PM / Target ${pm} PM (Rasio: ${ratio.toFixed(2)}) ${ratio >= 1.0 ? '✓ Cukup' : '✗ Kurang'}`;
+        komporRatioInfo.className = ratio >= 1.0 ? 'text-xs font-bold text-emerald-700' : 'text-xs font-bold text-red-700';
+      } else {
+        komporRatioInfo.textContent = 'Menunggu input jumlah kompor & target PM...';
+        komporRatioInfo.className = 'text-xs font-medium text-slate-500';
+      }
     }
   }
 
-  // 4. File Dropzones & Simulasi Kamera
+  // 4. File Dropzones & Pemicu Kamera
   function setupDropzones() {
     const dropzones = document.querySelectorAll('.evidence-dropzone');
     dropzones.forEach(dz => {
       const fieldId = dz.getAttribute('data-evidence-id');
       const fileInput = dz.querySelector('input[type="file"]');
-      const previewEl = dz.querySelector('.file-preview');
-      const defaultContent = dz.querySelector('.dropzone-default');
 
       dz.addEventListener('click', (e) => {
         if (e.target.tagName !== 'BUTTON' && e.target !== fileInput) {
@@ -337,9 +359,7 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let isDrawing = false;
-    let hasSigned = false;
 
-    // Set canvas dimension matching container
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * 2;
@@ -348,7 +368,7 @@
       ctx.lineWidth = 2.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#1e3a8a'; // Navy Blue TTD resmi
+      ctx.strokeStyle = '#1e3a8a';
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -365,7 +385,6 @@
 
     function startDraw(e) {
       isDrawing = true;
-      hasSigned = true;
       const pos = getPos(e);
       ctx.beginPath();
       ctx.moveTo(pos.x, pos.y);
@@ -400,12 +419,11 @@
       clearBtn.addEventListener('click', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         state.signatureDataUrl = null;
-        hasSigned = false;
       });
     }
   }
 
-  // 6. Modal Rekomendasi & Navigasi Wizard
+  // 6. Modal Rekomendasi & Tombol Cetak / Kirim
   function setupModalEvents() {
     const btnNext = document.getElementById('btn-next-step');
     const modal = document.getElementById('recommendation-modal');
@@ -445,21 +463,13 @@
     if (btnSubmitFinal) {
       btnSubmitFinal.addEventListener('click', () => {
         if (!state.signatureDataUrl) {
-          alert('Tanda tangan Ketua Satgas MBG Kabupaten/Kota wajib dibubuhkan sebelum mengirimkan hasil!');
+          showToast('Tanda tangan Ketua Satgas MBG wajib dibubuhkan sebelum mengirim hasil!', 'error');
           return;
         }
-        alert('Data evaluasi berhasil dikunci dan diarsip. Anda akan dialihkan ke portal resmi BGN: https://s.bgn.go.id/satgas-mbg');
-        window.open('https://s.bgn.go.id/satgas-mbg', '_blank');
-      });
-    }
-
-    const btnReset = document.getElementById('btn-reset-draft');
-    if (btnReset) {
-      btnReset.addEventListener('click', () => {
-        if (confirm('Apakah Bos yakin ingin mereset seluruh formulir? Data draft akan dihapus.')) {
-          localStorage.removeItem(STORAGE_KEY);
-          location.reload();
-        }
+        showToast('Hasil triase berhasil diverifikasi. Mengalihkan ke portal resmi BGN...', 'success');
+        setTimeout(() => {
+          window.open('https://s.bgn.go.id/satgas-mbg', '_blank');
+        }, 1200);
       });
     }
   }
@@ -484,12 +494,204 @@
     document.getElementById('modal-lahan').textContent = `${res.clusters.lahanK3.toFixed(1)} / 12%`;
   }
 
-  // 7. Penyimpanan Draft Lokal (LocalStorage)
+  // 7. PERBAIKAN TOMBOL RESET FORMULIR (Lengkap & Bersih)
+  function setupResetButton() {
+    const btnReset = document.getElementById('btn-reset-draft');
+    if (!btnReset) return;
+
+    btnReset.addEventListener('click', () => {
+      const confirmed = window.confirm(
+        'PERINGATAN RESET:\n\nApakah Bos yakin ingin mereset seluruh formulir checklist?\nSemua isian data, bukti foto, dan tanda tangan akan dibersihkan kembali ke 0%.'
+      );
+
+      if (!confirmed) return;
+
+      // 1. Reset state data
+      state.formData = getCleanInitialState();
+      state.attachedFiles = {};
+      state.signatureDataUrl = null;
+
+      // 2. Bersihkan penyimpanan lokal
+      localStorage.removeItem(STORAGE_KEY);
+
+      // 3. Kosongkan semua input & select DOM
+      const inputs = document.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
+      inputs.forEach(input => {
+        const field = input.getAttribute('data-field');
+        if (field === 'inspection_date') {
+          input.value = new Date().toISOString().split('T')[0];
+        } else if (input.tagName === 'SELECT') {
+          input.selectedIndex = 0;
+        } else {
+          input.value = '';
+        }
+      });
+
+      // 4. Reset pilihan tombol radio card ke default bersih
+      const allRadioButtons = document.querySelectorAll('button[data-radio-group]');
+      allRadioButtons.forEach(btn => {
+        const group = btn.getAttribute('data-radio-group');
+        const val = btn.getAttribute('data-value');
+        const isDefaultSelected = (state.formData[group] === val);
+        updateRadioStyles(btn, isDefaultSelected);
+      });
+
+      // 5. Reset Dropdown Kab/Kota
+      const kabDisplay = document.getElementById('kabkota-value');
+      if (kabDisplay) {
+        kabDisplay.textContent = 'Pilih Kabupaten / Kota';
+        kabDisplay.classList.remove('text-slate-900', 'font-medium');
+        kabDisplay.classList.add('text-slate-400');
+      }
+
+      // 6. Reset seluruh Dropzone Berkas
+      const dropzones = document.querySelectorAll('.evidence-dropzone');
+      dropzones.forEach(dz => {
+        const fileInput = dz.querySelector('input[type="file"]');
+        const previewEl = dz.querySelector('.file-preview');
+        const defaultContent = dz.querySelector('.dropzone-default');
+        if (fileInput) fileInput.value = '';
+        if (previewEl) previewEl.classList.add('hidden');
+        if (defaultContent) defaultContent.classList.remove('hidden');
+      });
+
+      // 7. Bersihkan Kanvas Tanda Tangan
+      const canvas = document.getElementById('signature-pad');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // 8. Tutup Modal jika terbuka
+      const modal = document.getElementById('recommendation-modal');
+      if (modal) modal.classList.add('hidden');
+
+      // 9. Hitung ulang skor (otomatis menjadi 0.0% Grade D)
+      recalculateScores();
+
+      // 10. Scroll ke bagian atas dengan mulus
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 11. Tampilkan notifikasi konfirmasi
+      showToast('Formulir checklist berhasil direset total ke kondisi awal bersih.', 'info');
+    });
+  }
+
+  // 8. Fitur Cadangkan (Export) & Pulihkan (Import) Berkas Data
+  function setupBackupRestore() {
+    const btnExport = document.getElementById('btn-export-json');
+    const inputImport = document.getElementById('input-import-json');
+
+    if (btnExport) {
+      btnExport.addEventListener('click', () => {
+        const exportPayload = {
+          app: 'SPPG-Triase-BGN',
+          version: '1.0.0',
+          exportedAt: new Date().toISOString(),
+          data: state.formData,
+          scores: state.scores
+        };
+
+        const jsonStr = JSON.stringify(exportPayload, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const sppgId = state.formData.sppg_id || 'DRAFT';
+        a.href = url;
+        a.download = `sppg-triase-${sppgId}-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Data berhasil diekspor sebagai berkas JSON cadangan.', 'success');
+      });
+    }
+
+    if (inputImport) {
+      inputImport.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const parsed = JSON.parse(event.target.result);
+            if (parsed && parsed.data) {
+              Object.assign(state.formData, parsed.data);
+              saveDraft();
+              syncDomWithState();
+              recalculateScores();
+              showToast('Data checklist berhasil dipulihkan dari berkas JSON.', 'success');
+            } else {
+              showToast('Format berkas JSON tidak valid!', 'error');
+            }
+          } catch (err) {
+            showToast('Gagal membaca berkas JSON: ' + err.message, 'error');
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+  }
+
+  function syncDomWithState() {
+    // Sinkronkan input form
+    const inputs = document.querySelectorAll('input[data-field], select[data-field], textarea[data-field]');
+    inputs.forEach(input => {
+      const field = input.getAttribute('data-field');
+      if (state.formData[field] !== undefined) {
+        input.value = state.formData[field];
+      }
+    });
+
+    // Sinkronkan tombol radio
+    const allRadioButtons = document.querySelectorAll('button[data-radio-group]');
+    allRadioButtons.forEach(btn => {
+      const group = btn.getAttribute('data-radio-group');
+      const val = btn.getAttribute('data-value');
+      const isSelected = (state.formData[group] === val);
+      updateRadioStyles(btn, isSelected);
+    });
+
+    // Sinkronkan display Kab/Kota
+    const kabDisplay = document.getElementById('kabkota-value');
+    if (kabDisplay && state.formData.kab_kota) {
+      kabDisplay.textContent = state.formData.kab_kota;
+      kabDisplay.classList.remove('text-slate-400');
+      kabDisplay.classList.add('text-slate-900', 'font-medium');
+    }
+  }
+
+  // 9. Toast Notifikasi Mengambang
+  function showToast(message, type = 'info') {
+    let toast = document.getElementById('toast-notification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast-notification';
+      toast.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none opacity-0 transform -translate-y-2';
+      document.body.appendChild(toast);
+    }
+
+    if (type === 'success') {
+      toast.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none opacity-100 transform translate-y-0 bg-emerald-700 text-white border border-emerald-500';
+    } else if (type === 'error') {
+      toast.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none opacity-100 transform translate-y-0 bg-red-700 text-white border border-red-500';
+    } else {
+      toast.className = 'fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none opacity-100 transform translate-y-0 bg-slate-900 text-white border border-slate-700';
+    }
+
+    toast.textContent = message;
+
+    setTimeout(() => {
+      toast.classList.remove('opacity-100', 'translate-y-0');
+      toast.classList.add('opacity-0', '-translate-y-2');
+    }, 2800);
+  }
+
+  // 10. Penyimpanan Draft Lokal
   function saveDraft() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.formData));
     } catch (e) {
-      console.warn('Gagal menyimpan draft ke localStorage', e);
+      console.warn('Gagal menyimpan draft:', e);
     }
   }
 
@@ -499,16 +701,10 @@
       if (saved) {
         const parsed = JSON.parse(saved);
         Object.assign(state.formData, parsed);
-        // Perbarui tampilan elemen yang sudah dimuat
-        const kabDisplay = document.getElementById('kabkota-value');
-        if (kabDisplay && state.formData.kab_kota) {
-          kabDisplay.textContent = state.formData.kab_kota;
-          kabDisplay.classList.remove('text-slate-400');
-          kabDisplay.classList.add('text-slate-900', 'font-medium');
-        }
+        syncDomWithState();
       }
     } catch (e) {
-      console.warn('Gagal membaca draft dari localStorage', e);
+      console.warn('Gagal membaca draft:', e);
     }
   }
 
